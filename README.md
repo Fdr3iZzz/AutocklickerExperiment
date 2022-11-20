@@ -4,8 +4,11 @@ working:
 - fight
 - somewhere
 - screen capture
-
-todo:
 - ult on pixel color change
 - trigger on loose or win
-- loop 
+- loop
+
+todo:
+- close program on hotkey
+- gui
+- create loop 
