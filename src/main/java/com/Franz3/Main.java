@@ -13,6 +13,7 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main implements NativeKeyListener, NativeMouseListener {
 
@@ -35,6 +36,11 @@ public class Main implements NativeKeyListener, NativeMouseListener {
     static String getPixelHex;
     static String pixelColorWin = "ff070302";
     static String pixelColorLoose = "ff040308";
+    static boolean [] selectedUlting = new boolean[5];
+    int winsGained;
+    int loosesGained;
+    public static String ultsSelected = "";
+
 
     static {
         try {
@@ -58,20 +64,69 @@ public class Main implements NativeKeyListener, NativeMouseListener {
         //set up robot
         //Robot robot = new Robot();
         robot.setAutoDelay(10);
-        //set up screenCapture
-        Rectangle rec = new Rectangle(738,1024,458,1);
+        Scanner scanner = new Scanner(System.in);
         System.out.println("Starting...");
         System.out.println("Press STRG + ALT + Q to quit");
-        Thread.sleep(2 * 1000);
+        //get user input
+        while (true) {
+                System.out.println("Which heroes should ult?");
+                System.out.println("1, 2, 3, 4, 5. exit and start with 6. reset with 7");
+                if (!ultsSelected.equals("")){
+                    System.out.println("Currently selected: " + ultsSelected);
+                }
+                //take input
+                int Input = scanner.nextInt();
+                //repeat if wrong
+                if (Input > 7 || Input < 1) {
+                    System.out.println("wrong Input");
+                    continue;
+                }
+                if (Input == 1) {
+                    selectedUlting [0] = true;
+                    ultsSelected = ultsSelected + "1, ";
+                }
+                if (Input == 2) {
+                    selectedUlting [1] = true;
+                    ultsSelected = ultsSelected + "2, ";
+                }
+                if (Input == 3) {
+                    selectedUlting [2] = true;
+                    ultsSelected = ultsSelected + "3, ";
+                }
+                if (Input == 4) {
+                    selectedUlting [3] = true;
+                    ultsSelected = ultsSelected + "4, ";
+                }
+                if (Input == 5) {
+                    selectedUlting [4] = true;
+                    ultsSelected = ultsSelected + "5, ";
+                }
+                // reset
+                if (Input == 7){
+                    selectedUlting [0] = false;
+                    selectedUlting [1] = false;
+                    selectedUlting [2] = false;
+                    selectedUlting [3] = false;
+                    selectedUlting [4] = false;
+                    ultsSelected = "";
+                    System.out.println("Inputs reseted");
+                }
+                //exit on 6
+                if (Input == 6) {
 
-        //click start
-        //click fight
-        //ult
-        //click somewhere
+                    System.out.println("Ulting slots selected: " + ultsSelected);
+                    break;
+                }
+            }
+                Thread.sleep(2 * 1000);
+        /*
+        Make user Input System better
+        autorestart:
+        detect startButton
+        maybe detect bossfight
+        detect fightButton
 
-        //ult
-        //screenshot
-        //compare color -> maybe click
+         */
 
         //click start
         robot.mouseMove(startX, startY);
@@ -83,49 +138,44 @@ public class Main implements NativeKeyListener, NativeMouseListener {
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         //screenshot
-        BufferedImage image = robot.createScreenCapture(rec);
-        ImageIO.write(image, "jpg", new File(path + "\\screen.jpg"));
             while (true) {
-                getPixelHex = Integer.toHexString(robot.getPixelColor(twoX, generalY).getRGB());
-                //compareColor
-                if (getPixelHex.equals(pixelColor)) {
-                    //ult if correct
-                    robot.mouseMove(twoX, generalY);
-                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-                } else if (getPixelHex.equals(pixelColorWin) || getPixelHex.equals(pixelColorLoose)) {
-                    System.out.println("Win or Loose");
-                    break;
-                }
+                //compareColor and ult if correct and selected
                 getPixelHex = Integer.toHexString(robot.getPixelColor(oneX, generalY).getRGB());
-                if (getPixelHex.equals(pixelColor)) {
+                if (getPixelHex.equals(pixelColor) && selectedUlting[0]) {
                     robot.mouseMove(oneX, generalY);
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
+                getPixelHex = Integer.toHexString(robot.getPixelColor(twoX, generalY).getRGB());
+                if (getPixelHex.equals(pixelColor) && selectedUlting[1]) {
+                    robot.mouseMove(twoX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
                 getPixelHex = Integer.toHexString(robot.getPixelColor(threeX, generalY).getRGB());
-                if (getPixelHex.equals(pixelColor)) {
+                if (getPixelHex.equals(pixelColor) && selectedUlting[2]) {
                     robot.mouseMove(threeX, generalY);
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
                 getPixelHex = Integer.toHexString(robot.getPixelColor(fourX, generalY).getRGB());
-                if (getPixelHex.equals(pixelColor)) {
+                if (getPixelHex.equals(pixelColor) && selectedUlting[3]) {
                     robot.mouseMove(fourX, generalY);
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
                 getPixelHex = Integer.toHexString(robot.getPixelColor(fiveX, generalY).getRGB());
-                if (getPixelHex.equals(pixelColor)) {
+                if (getPixelHex.equals(pixelColor) && selectedUlting[4]) {
                     robot.mouseMove(fiveX, generalY);
                     robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
                     robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 }
+                //detect win or loose
+                if (getPixelHex.equals(pixelColorWin) || getPixelHex.equals(pixelColorLoose)) {
+                    System.out.println("Win or Loose");
+                    break;
+                }
             }
-
-        //ult
-        //check win or loose
-
 
         //click anywhere
         robot.mouseMove(anywhereX, anywhereY);
@@ -145,13 +195,14 @@ public class Main implements NativeKeyListener, NativeMouseListener {
         }
         if (e.getKeyCode() == NativeKeyEvent.VC_Q && hotkey && hotkey2) {
             try {
+                System.out.println("Exiting program");
                 GlobalScreen.unregisterNativeHook();
+                hotkey = false;
+                hotkey2 = false;
+                System.exit(0);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println("Exiting program");
-            hotkey = false;
-            hotkey2 = false;
         }
         //-------------------------------------------------------
 
