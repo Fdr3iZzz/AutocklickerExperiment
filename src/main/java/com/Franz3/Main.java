@@ -23,14 +23,26 @@ public class Main implements NativeKeyListener, NativeMouseListener {
     static int anywhereX = 936;
     static int anywhereY = 936;
 
-    static int generalY = 1021;
-    static int oneY = 715;
-    static int twoY = 829;
-    static int threeY = 939;
-    static int fourY = 1051;
-    static int fiveY = 1163;
+    static int generalY = 1024;
+    static int oneX = 752;
+    static int twoX = 863;
+    static int threeX = 974;
+    static int fourX = 1085;
+    static int fiveX = 1196;
+    static String pixelColor = "fff27f34";    //fff27f34    f27f34
     static String path = System.getProperty("user.home") + "\\afkAutomation";
+    static Robot robot;
+    static String getPixelHex;
+    static String pixelColorWin = "ff070302";
+    static String pixelColorLoose = "ff040308";
 
+    static {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void main(String[] args) throws InterruptedException, AWTException, IOException {
         try {
@@ -44,20 +56,20 @@ public class Main implements NativeKeyListener, NativeMouseListener {
         File file = new File(path);
         file.mkdirs();
         //set up robot
-        Robot robot = new Robot();
+        //Robot robot = new Robot();
         robot.setAutoDelay(10);
         //set up screenCapture
-        Rectangle rec = new Rectangle(1037,751,550,1); //1037,751,550,1
-        BufferedImage image = robot.createScreenCapture(rec);
+        Rectangle rec = new Rectangle(738,1024,458,1);
         System.out.println("Starting...");
+        System.out.println("Press STRG + ALT + Q to quit");
         Thread.sleep(2 * 1000);
 
-        //click starten
-        //click kämpfen
-        //ulten
-        //click irgendwo
+        //click start
+        //click fight
+        //ult
+        //click somewhere
 
-        //ulten
+        //ult
         //screenshot
         //compare color -> maybe click
 
@@ -66,23 +78,59 @@ public class Main implements NativeKeyListener, NativeMouseListener {
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
         robot.delay(2000);
-        //click kämpfen
+        //click fight
         robot.mouseMove(fightX, fightY);
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        //screen
+        //screenshot
+        BufferedImage image = robot.createScreenCapture(rec);
         ImageIO.write(image, "jpg", new File(path + "\\screen.jpg"));
-        //ult
+            while (true) {
+                getPixelHex = Integer.toHexString(robot.getPixelColor(twoX, generalY).getRGB());
+                //compareColor
+                if (getPixelHex.equals(pixelColor)) {
+                    //ult if correct
+                    robot.mouseMove(twoX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                } else if (getPixelHex.equals(pixelColorWin) || getPixelHex.equals(pixelColorLoose)) {
+                    System.out.println("Win or Loose");
+                    break;
+                }
+                getPixelHex = Integer.toHexString(robot.getPixelColor(oneX, generalY).getRGB());
+                if (getPixelHex.equals(pixelColor)) {
+                    robot.mouseMove(oneX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
+                getPixelHex = Integer.toHexString(robot.getPixelColor(threeX, generalY).getRGB());
+                if (getPixelHex.equals(pixelColor)) {
+                    robot.mouseMove(threeX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
+                getPixelHex = Integer.toHexString(robot.getPixelColor(fourX, generalY).getRGB());
+                if (getPixelHex.equals(pixelColor)) {
+                    robot.mouseMove(fourX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
+                getPixelHex = Integer.toHexString(robot.getPixelColor(fiveX, generalY).getRGB());
+                if (getPixelHex.equals(pixelColor)) {
+                    robot.mouseMove(fiveX, generalY);
+                    robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                }
+            }
 
-        //screen
+        //ult
+        //check win or loose
+
 
         //click anywhere
         robot.mouseMove(anywhereX, anywhereY);
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-
-
-
     }
     public boolean hotkey = false;
     public boolean hotkey2 = false;
@@ -106,6 +154,7 @@ public class Main implements NativeKeyListener, NativeMouseListener {
             hotkey2 = false;
         }
         //-------------------------------------------------------
+
     }
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
@@ -123,7 +172,7 @@ public class Main implements NativeKeyListener, NativeMouseListener {
     @Override
     public void nativeMouseClicked(NativeMouseEvent e) {
         if (e.getButton() == NativeMouseEvent.BUTTON1){
-            System.out.println("X: " + e.getY() + " Y: " + e.getX());
+            System.out.println("X: " + e.getX() + " Y: " + e.getY());
         }
     }
 }
