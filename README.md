@@ -12,3 +12,5 @@ todo:
 - close program on hotkey
 - gui
 - create loop 
+
+for personal use you have to change the pixelvalues. Android version planned but on pause because of cooler things
